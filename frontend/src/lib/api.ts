@@ -130,6 +130,52 @@ export const wishlistAPI = {
   clearWishlist: () => api.delete('/wishlist/clear'),
 };
 
+// Upload APIs
+export const uploadAPI = {
+  // Upload product images (multiple files)
+  uploadProductImages: (
+    files: File[],
+    onProgress?: (percent: number) => void
+  ) => {
+    const formData = new FormData();
+    files.forEach((file) => formData.append('images', file));
+    return api.post('/upload/product-images', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress: (progressEvent) => {
+        if (progressEvent.total && onProgress) {
+          const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          onProgress(percent);
+        }
+      },
+    });
+  },
+
+  // Upload product video (single file)
+  uploadProductVideo: (
+    file: File,
+    onProgress?: (percent: number) => void
+  ) => {
+    const formData = new FormData();
+    formData.append('video', file);
+    return api.post('/upload/product-video', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress: (progressEvent) => {
+        if (progressEvent.total && onProgress) {
+          const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          onProgress(percent);
+        }
+      },
+    });
+  },
+
+  // Delete uploaded file
+  deleteUpload: (publicId: string) =>
+    api.delete(`/upload/${encodeURIComponent(publicId)}`),
+
+  // Get upload configuration
+  getConfig: () => api.get('/upload/config'),
+};
+
 // Admin APIs
 export const adminAPI = {
   getDashboard: () => api.get('/admin/dashboard'),

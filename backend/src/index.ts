@@ -18,6 +18,7 @@ import vendorRoutes from './routes/vendors';
 import adminRoutes from './routes/admin';
 import reviewRoutes from './routes/reviews';
 import wishlistRoutes from './routes/wishlist';
+import uploadRoutes from './routes/upload';
 
 // Load env vars
 dotenv.config();
@@ -91,6 +92,7 @@ app.use('/api/vendors', vendorRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Health check
 app.get('/api/health', (req: Request, res: Response) => {
