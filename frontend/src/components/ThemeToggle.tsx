@@ -27,7 +27,7 @@ export default function ThemeToggle() {
     { value: 'system' as const, label: 'System', icon: Monitor },
   ];
 
-  const currentIcon = resolvedTheme === 'dark' ? Moon : Sun;
+  const CurrentIcon = resolvedTheme === 'dark' ? Moon : Sun;
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -36,7 +36,7 @@ export default function ThemeToggle() {
         className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         aria-label="Toggle theme"
       >
-        <currentIcon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+        <CurrentIcon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
       </button>
 
       {isOpen && (
