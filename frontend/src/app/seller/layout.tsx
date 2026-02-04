@@ -32,13 +32,25 @@ export default function SellerLayout({ children }: { children: React.ReactNode }
   const { user, isAuthenticated, logout } = useStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Allow access to register page without authentication
+  const isRegisterPage = pathname === '/seller/register';
+
   useEffect(() => {
+    if (isRegisterPage) {
+      // Register page is accessible to everyone
+      return;
+    }
     if (!isAuthenticated) {
       router.push('/auth/login?redirect=/seller');
     } else if (user?.role !== 'seller' && user?.role !== 'admin') {
       router.push('/seller/register');
     }
-  }, [isAuthenticated, user, router]);
+  }, [isAuthenticated, user, router, pathname, isRegisterPage]);
+
+  // Allow register page to render without authentication
+  if (isRegisterPage) {
+    return <>{children}</>;
+  }
 
   if (!isAuthenticated || (user?.role !== 'seller' && user?.role !== 'admin')) {
     return null;
