@@ -1,11 +1,8 @@
 import axios from 'axios';
 
-// Production API URL - Railway backend
-const PRODUCTION_API_URL = 'https://f2rworld-production.up.railway.app/api';
-
-// Use environment variable if set, otherwise use production URL in browser, localhost for SSR
-const API_URL = process.env.NEXT_PUBLIC_API_URL ||
-  (typeof window !== 'undefined' ? PRODUCTION_API_URL : 'http://localhost:5000/api');
+// API URL: Use env var if set, otherwise default to production Railway backend
+// For local development, set NEXT_PUBLIC_API_URL=http://localhost:5000/api in .env.local
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://f2rworld-production.up.railway.app/api';
 
 const api = axios.create({
   baseURL: API_URL,
