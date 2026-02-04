@@ -2,15 +2,22 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy, Profile } from 'passport-google-oauth20';
 import User from '../models/User';
 
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
-const GOOGLE_CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL || 'http://localhost:5000/api/auth/google/callback';
-
 export const initializePassport = () => {
+  // Read environment variables inside the function, after dotenv.config() has been called
+  const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
+  const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
+  const GOOGLE_CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL || 'http://localhost:5000/api/auth/google/callback';
+
+  console.log('Initializing Passport...');
+  console.log('GOOGLE_CLIENT_ID present:', !!GOOGLE_CLIENT_ID);
+  console.log('GOOGLE_CLIENT_SECRET present:', !!GOOGLE_CLIENT_SECRET);
+
   if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
     console.log('Google OAuth credentials not configured. Skipping Google auth setup.');
     return;
   }
+
+  console.log('Configuring Google OAuth strategy...');
 
   passport.use(
     new GoogleStrategy(
@@ -79,6 +86,8 @@ export const initializePassport = () => {
       }
     )
   );
+
+  console.log('Google OAuth strategy configured successfully!');
 
   // Serialize user for session
   passport.serializeUser((user: any, done) => {
