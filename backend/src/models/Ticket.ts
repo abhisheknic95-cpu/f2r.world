@@ -54,12 +54,11 @@ const ticketSchema = new Schema<ITicket>(
 );
 
 // Generate unique ticket ID
-ticketSchema.pre('save', async function (next) {
+ticketSchema.pre('save', async function () {
   if (this.isNew) {
     const count = await mongoose.model('Ticket').countDocuments();
     this.ticketId = `TKT${(count + 1).toString().padStart(6, '0')}`;
   }
-  next();
 });
 
 export default mongoose.model<ITicket>('Ticket', ticketSchema);

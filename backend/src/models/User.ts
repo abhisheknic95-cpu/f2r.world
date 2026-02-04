@@ -88,10 +88,9 @@ const userSchema = new Schema<IUser>(
 );
 
 // Hash password before saving
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password') || !this.password) return next();
+userSchema.pre('save', async function () {
+  if (!this.isModified('password') || !this.password) return;
   this.password = await bcrypt.hash(this.password, 12);
-  next();
 });
 
 // Compare password method

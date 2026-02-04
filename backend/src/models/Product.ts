@@ -136,14 +136,13 @@ const productSchema = new Schema<IProduct>(
 );
 
 // Create slug from name before saving
-productSchema.pre('save', function (next) {
+productSchema.pre('save', function () {
   if (this.isModified('name')) {
     this.slug = this.name
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '') + '-' + Date.now();
   }
-  next();
 });
 
 // Calculate final selling price with discounts

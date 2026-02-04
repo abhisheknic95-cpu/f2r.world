@@ -165,7 +165,7 @@ const orderSchema = new Schema<IOrder>(
 );
 
 // Generate unique order ID
-orderSchema.pre('save', async function (next) {
+orderSchema.pre('save', async function () {
   if (this.isNew) {
     const date = new Date();
     const year = date.getFullYear().toString().slice(-2);
@@ -173,7 +173,6 @@ orderSchema.pre('save', async function (next) {
     const random = Math.floor(Math.random() * 100000).toString().padStart(5, '0');
     this.orderId = `F2R${year}${month}${random}`;
   }
-  next();
 });
 
 export default mongoose.model<IOrder>('Order', orderSchema);
