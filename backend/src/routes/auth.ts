@@ -27,25 +27,25 @@ import {
 const router = express.Router();
 
 // Public routes
-router.post('/send-otp', validatePhone, sendOTP);
-router.post('/verify-otp', validateOTP, verifyOTP);
-router.post('/register-seller', validateSellerRegistration, registerSeller);
-router.post('/login', validateLogin, login);
-router.post('/logout', logout);
-router.post('/setup-admin', validateAdminSetup, setupAdmin);
+router.post('/send-otp', validatePhone as any, sendOTP as any);
+router.post('/verify-otp', validateOTP as any, verifyOTP as any);
+router.post('/register-seller', validateSellerRegistration as any, registerSeller as any);
+router.post('/login', validateLogin as any, login as any);
+router.post('/logout', logout as any);
+router.post('/setup-admin', validateAdminSetup as any, setupAdmin as any);
 
 // Google OAuth routes
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }) as any);
 router.get(
   '/google/callback',
-  passport.authenticate('google', { session: false, failureRedirect: '/auth/login?error=google_auth_failed' }),
-  googleCallback
+  passport.authenticate('google', { session: false, failureRedirect: '/auth/login?error=google_auth_failed' }) as any,
+  googleCallback as any
 );
 
 // Protected routes
-router.get('/me', protect, getMe);
-router.put('/profile', protect, validateProfileUpdate, updateProfile);
-router.post('/address', protect, validateAddress, addAddress);
-router.delete('/address/:addressId', protect, deleteAddress);
+router.get('/me', protect as any, getMe as any);
+router.put('/profile', protect as any, validateProfileUpdate as any, updateProfile as any);
+router.post('/address', protect as any, validateAddress as any, addAddress as any);
+router.delete('/address/:addressId', protect as any, deleteAddress as any);
 
 export default router;

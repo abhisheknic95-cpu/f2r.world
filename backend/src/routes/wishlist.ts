@@ -13,13 +13,13 @@ import { validateWishlistItem } from '../middleware/validators';
 const router = express.Router();
 
 // All routes are protected
-router.use(protect);
+router.use(protect as any);
 
-router.get('/', getWishlist);
-router.post('/add', validateWishlistItem, addToWishlist);
-router.delete('/remove/:productId', removeFromWishlist);
-router.get('/check/:productId', checkWishlist);
-router.delete('/clear', clearWishlist);
-router.post('/move-to-cart', moveAllToCart);
+router.get('/', getWishlist as any);
+router.post('/add', validateWishlistItem as any, addToWishlist as any);
+router.delete('/remove/:productId', removeFromWishlist as any);
+router.get('/check/:productId', checkWishlist as any);
+router.delete('/clear', clearWishlist as any);
+router.post('/move-to-cart', moveAllToCart as any);
 
 export default router;

@@ -17,19 +17,19 @@ import { validateOrder, validatePaymentVerification, validatePagination } from '
 const router = express.Router();
 
 // Customer routes
-router.post('/', protect, validateOrder, createOrder);
-router.post('/verify-payment', protect, validatePaymentVerification, verifyPayment);
-router.get('/my-orders', protect, validatePagination, getMyOrders);
-router.get('/:orderId', protect, getOrder);
-router.get('/:orderId/invoice', protect, downloadInvoice);
-router.put('/:orderId/cancel', protect, cancelOrder);
+router.post('/', protect as any, validateOrder as any, createOrder as any);
+router.post('/verify-payment', protect as any, validatePaymentVerification as any, verifyPayment as any);
+router.get('/my-orders', protect as any, validatePagination as any, getMyOrders as any);
+router.get('/:orderId', protect as any, getOrder as any);
+router.get('/:orderId/invoice', protect as any, downloadInvoice as any);
+router.put('/:orderId/cancel', protect as any, cancelOrder as any);
 
 // Vendor routes
-router.get('/vendor/orders', protect, authorize('seller'), getVendorOrders);
-router.put('/:orderId/items/:itemId/status', protect, authorize('seller'), updateItemStatus);
+router.get('/vendor/orders', protect as any, authorize('seller') as any, getVendorOrders as any);
+router.put('/:orderId/items/:itemId/status', protect as any, authorize('seller') as any, updateItemStatus as any);
 
 // Admin routes
-router.get('/admin/all', protect, authorize('admin'), getAllOrders);
-router.put('/admin/:orderId/status', protect, authorize('admin'), updateOrderStatus);
+router.get('/admin/all', protect as any, authorize('admin') as any, getAllOrders as any);
+router.put('/admin/:orderId/status', protect as any, authorize('admin') as any, updateOrderStatus as any);
 
 export default router;

@@ -25,43 +25,43 @@ import { protect, authorize } from '../middleware/auth';
 const router = express.Router();
 
 // Public route for coupon validation
-router.post('/coupons/validate', validateCoupon);
+router.post('/coupons/validate', validateCoupon as any);
 
 // Public route for active banners
-router.get('/banners/active', getBanners);
+router.get('/banners/active', getBanners as any);
 
 // Protected admin routes
-router.use(protect, authorize('admin'));
+router.use(protect as any, authorize('admin') as any);
 
-router.get('/dashboard', getAdminDashboard);
-router.get('/users', getAllUsers);
+router.get('/dashboard', getAdminDashboard as any);
+router.get('/users', getAllUsers as any);
 
 // Banner management
-router.get('/banners', getBanners);
-router.post('/banners', createBanner);
-router.put('/banners/:id', updateBanner);
-router.delete('/banners/:id', deleteBanner);
+router.get('/banners', getBanners as any);
+router.post('/banners', createBanner as any);
+router.put('/banners/:id', updateBanner as any);
+router.delete('/banners/:id', deleteBanner as any);
 
 // Coupon management
-router.get('/coupons', getCoupons);
-router.post('/coupons', createCoupon);
-router.put('/coupons/:id', updateCoupon);
-router.delete('/coupons/:id', deleteCoupon);
+router.get('/coupons', getCoupons as any);
+router.post('/coupons', createCoupon as any);
+router.put('/coupons/:id', updateCoupon as any);
+router.delete('/coupons/:id', deleteCoupon as any);
 
 // Product management
-router.get('/products', getAllProducts);
-router.put('/products/:id', updateProduct);
-router.put('/products/:id/promote', promoteProduct);
-router.put('/products/discount', applyWebsiteDiscount);
+router.get('/products', getAllProducts as any);
+router.put('/products/:id', updateProduct as any);
+router.put('/products/:id/promote', promoteProduct as any);
+router.put('/products/discount', applyWebsiteDiscount as any);
 
 // Analytics
-router.get('/analytics', getAnalytics);
+router.get('/analytics', getAnalytics as any);
 
 // Settings
-router.get('/settings', getSettings);
-router.put('/settings', updateSettings);
+router.get('/settings', getSettings as any);
+router.put('/settings', updateSettings as any);
 
 // Data export
-router.get('/orders/export', exportOrders);
+router.get('/orders/export', exportOrders as any);
 
 export default router;

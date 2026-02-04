@@ -13,13 +13,13 @@ import { validateReview, validatePagination, validateMongoId } from '../middlewa
 const router = express.Router();
 
 // Public routes
-router.get('/product/:productId', validatePagination, getProductReviews);
+router.get('/product/:productId', validatePagination as any, getProductReviews as any);
 
 // Protected routes
-router.post('/', protect, validateReview, createReview);
-router.get('/my-reviews', protect, validatePagination, getMyReviews);
-router.put('/:reviewId', protect, ...validateMongoId('reviewId'), updateReview);
-router.delete('/:reviewId', protect, ...validateMongoId('reviewId'), deleteReview);
-router.post('/:reviewId/helpful', protect, ...validateMongoId('reviewId'), markHelpful);
+router.post('/', protect as any, validateReview as any, createReview as any);
+router.get('/my-reviews', protect as any, validatePagination as any, getMyReviews as any);
+router.put('/:reviewId', protect as any, ...(validateMongoId('reviewId') as any[]), updateReview as any);
+router.delete('/:reviewId', protect as any, ...(validateMongoId('reviewId') as any[]), deleteReview as any);
+router.post('/:reviewId/helpful', protect as any, ...(validateMongoId('reviewId') as any[]), markHelpful as any);
 
 export default router;

@@ -15,16 +15,16 @@ import { protect, authorize } from '../middleware/auth';
 const router = express.Router();
 
 // Seller routes
-router.post('/register', protect, registerVendor);
-router.get('/profile', protect, authorize('seller'), getVendorProfile);
-router.put('/profile', protect, authorize('seller'), updateVendorProfile);
-router.get('/dashboard', protect, authorize('seller'), getVendorDashboard);
-router.get('/finance', protect, authorize('seller'), getVendorFinance);
+router.post('/register', protect as any, registerVendor as any);
+router.get('/profile', protect as any, authorize('seller') as any, getVendorProfile as any);
+router.put('/profile', protect as any, authorize('seller') as any, updateVendorProfile as any);
+router.get('/dashboard', protect as any, authorize('seller') as any, getVendorDashboard as any);
+router.get('/finance', protect as any, authorize('seller') as any, getVendorFinance as any);
 
 // Admin routes
-router.get('/admin/all', protect, authorize('admin'), getAllVendors);
-router.put('/admin/:vendorId/approve', protect, authorize('admin'), approveVendor);
-router.put('/admin/:vendorId/commission', protect, authorize('admin'), updateCommission);
-router.put('/admin/:vendorId/toggle-status', protect, authorize('admin'), toggleVendorStatus);
+router.get('/admin/all', protect as any, authorize('admin') as any, getAllVendors as any);
+router.put('/admin/:vendorId/approve', protect as any, authorize('admin') as any, approveVendor as any);
+router.put('/admin/:vendorId/commission', protect as any, authorize('admin') as any, updateCommission as any);
+router.put('/admin/:vendorId/toggle-status', protect as any, authorize('admin') as any, toggleVendorStatus as any);
 
 export default router;

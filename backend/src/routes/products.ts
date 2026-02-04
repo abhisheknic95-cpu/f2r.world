@@ -15,16 +15,16 @@ import { protect, authorize } from '../middleware/auth';
 const router = express.Router();
 
 // Public routes
-router.get('/', getProducts);
-router.get('/featured', getFeaturedProducts);
-router.get('/category/:category', getProductsByCategory);
-router.get('/:slug', getProduct);
+router.get('/', getProducts as any);
+router.get('/featured', getFeaturedProducts as any);
+router.get('/category/:category', getProductsByCategory as any);
+router.get('/:slug', getProduct as any);
 
 // Seller routes
-router.get('/vendor/my-products', protect, authorize('seller'), getVendorProducts);
-router.post('/', protect, authorize('seller'), createProduct);
-router.put('/:id', protect, authorize('seller'), updateProduct);
-router.put('/:id/stock', protect, authorize('seller'), updateStock);
-router.delete('/:id', protect, authorize('seller'), deleteProduct);
+router.get('/vendor/my-products', protect as any, authorize('seller') as any, getVendorProducts as any);
+router.post('/', protect as any, authorize('seller') as any, createProduct as any);
+router.put('/:id', protect as any, authorize('seller') as any, updateProduct as any);
+router.put('/:id/stock', protect as any, authorize('seller') as any, updateStock as any);
+router.delete('/:id', protect as any, authorize('seller') as any, deleteProduct as any);
 
 export default router;
