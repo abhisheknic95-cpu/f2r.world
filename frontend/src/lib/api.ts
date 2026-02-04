@@ -135,6 +135,16 @@ export const adminAPI = {
     api.put('/admin/products/discount', { productIds, discount }),
   exportOrders: (params?: any) => api.get('/admin/orders/export', { params }),
   getAllOrders: (params?: any) => api.get('/orders/admin/all', { params }),
+  updateOrderStatus: (orderId: string, status: string) =>
+    api.put(`/orders/admin/${orderId}/status`, { status }),
+  // Product management
+  getAllProducts: (params?: any) => api.get('/admin/products', { params }),
+  updateProduct: (id: string, data: any) => api.put(`/admin/products/${id}`, data),
+  // Analytics
+  getAnalytics: (params?: any) => api.get('/admin/analytics', { params }),
+  // Settings
+  getSettings: () => api.get('/admin/settings'),
+  updateSettings: (data: any) => api.put('/admin/settings', data),
 };
 
 export default api;

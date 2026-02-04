@@ -8,6 +8,7 @@ import {
   updateItemStatus,
   cancelOrder,
   getAllOrders,
+  updateOrderStatus,
 } from '../controllers/orderController';
 import { protect, authorize } from '../middleware/auth';
 
@@ -26,5 +27,6 @@ router.put('/:orderId/items/:itemId/status', protect, authorize('seller'), updat
 
 // Admin routes
 router.get('/admin/all', protect, authorize('admin'), getAllOrders);
+router.put('/admin/:orderId/status', protect, authorize('admin'), updateOrderStatus);
 
 export default router;

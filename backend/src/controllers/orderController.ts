@@ -489,3 +489,42 @@ export const getAllOrders = async (req: AuthRequest, res: Response): Promise<voi
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
+
+// @desc    Update order status (Admin)
+// @route   PUT /api/orders/admin/:orderId/status
+export const updateOrderStatus = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { status } = req.body;
+
+    const order = await Order.findOne({ orderId: req.params.orderId });
+    if (!order) {
+      res.status(404).json({ success: false, message: 'Order not found' });
+      return;
+    }
+
+    order.status = status;
+
+    // Update all items status
+    order.items.forEach((item) => {
+      item.status = status;
+    });
+
+    // Set delivered date if status is delivered
+    if (status === 'delivered') {
+      order.items.forEach((item) => {
+        item.deliveredAt = new Date();
+      });
+    }
+
+    await order.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Order status updated',
+      order,
+    });
+  } catch (error) {
+    console.error('Update Order Status Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};

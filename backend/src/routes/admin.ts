@@ -14,6 +14,11 @@ import {
   promoteProduct,
   applyWebsiteDiscount,
   exportOrders,
+  getAllProducts,
+  updateProduct,
+  getAnalytics,
+  getSettings,
+  updateSettings,
 } from '../controllers/adminController';
 import { protect, authorize } from '../middleware/auth';
 
@@ -44,8 +49,17 @@ router.put('/coupons/:id', updateCoupon);
 router.delete('/coupons/:id', deleteCoupon);
 
 // Product management
+router.get('/products', getAllProducts);
+router.put('/products/:id', updateProduct);
 router.put('/products/:id/promote', promoteProduct);
 router.put('/products/discount', applyWebsiteDiscount);
+
+// Analytics
+router.get('/analytics', getAnalytics);
+
+// Settings
+router.get('/settings', getSettings);
+router.put('/settings', updateSettings);
 
 // Data export
 router.get('/orders/export', exportOrders);

@@ -457,3 +457,224 @@ export const exportOrders = async (req: AuthRequest, res: Response): Promise<voi
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
+
+// @desc    Get all products (Admin)
+// @route   GET /api/admin/products
+export const getAllProducts = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { page = 1, limit = 12, search, isFeatured, isActive } = req.query;
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const query: any = {};
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { category: { $regex: search, $options: 'i' } },
+      ];
+    }
+    if (isFeatured === 'true') query.isFeatured = true;
+    if (isActive === 'false') query.isActive = false;
+
+    const products = await Product.find(query)
+      .populate('vendor', 'businessName')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(Number(limit));
+
+    const total = await Product.countDocuments(query);
+
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      total,
+      totalPages: Math.ceil(total / Number(limit)),
+      products,
+    });
+  } catch (error) {
+    console.error('Get All Products Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// @desc    Update product (Admin)
+// @route   PUT /api/admin/products/:id
+export const updateProduct = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!product) {
+      res.status(404).json({ success: false, message: 'Product not found' });
+      return;
+    }
+
+    res.status(200).json({ success: true, product });
+  } catch (error) {
+    console.error('Update Product Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// @desc    Get analytics data (Admin)
+// @route   GET /api/admin/analytics
+export const getAnalytics = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { period = '30' } = req.query;
+    const daysAgo = new Date(Date.now() - Number(period) * 24 * 60 * 60 * 1000);
+
+    // Revenue trend
+    const revenueTrend = await Order.aggregate([
+      { $match: { createdAt: { $gte: daysAgo }, paymentStatus: 'paid' } },
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          revenue: { $sum: '$total' },
+          orders: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    // Top categories
+    const topCategories = await Order.aggregate([
+      { $match: { createdAt: { $gte: daysAgo } } },
+      { $unwind: '$items' },
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'items.product',
+          foreignField: '_id',
+          as: 'product',
+        },
+      },
+      { $unwind: '$product' },
+      {
+        $group: {
+          _id: '$product.category',
+          revenue: { $sum: { $multiply: ['$items.finalPrice', '$items.quantity'] } },
+          orders: { $sum: 1 },
+        },
+      },
+      { $sort: { revenue: -1 } },
+      { $limit: 5 },
+    ]);
+
+    // Top vendors
+    const topVendors = await Order.aggregate([
+      { $match: { createdAt: { $gte: daysAgo } } },
+      { $unwind: '$items' },
+      {
+        $group: {
+          _id: '$items.vendor',
+          revenue: { $sum: { $multiply: ['$items.finalPrice', '$items.quantity'] } },
+          orders: { $sum: 1 },
+        },
+      },
+      { $sort: { revenue: -1 } },
+      { $limit: 5 },
+      {
+        $lookup: {
+          from: 'vendors',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'vendor',
+        },
+      },
+      { $unwind: { path: '$vendor', preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          businessName: '$vendor.businessName',
+          revenue: 1,
+          orders: 1,
+        },
+      },
+    ]);
+
+    // Customer metrics
+    const newCustomers = await User.countDocuments({
+      role: 'customer',
+      createdAt: { $gte: daysAgo },
+    });
+
+    const repeatCustomers = await Order.aggregate([
+      { $match: { createdAt: { $gte: daysAgo } } },
+      {
+        $group: {
+          _id: '$customer',
+          orderCount: { $sum: 1 },
+        },
+      },
+      { $match: { orderCount: { $gt: 1 } } },
+      { $count: 'count' },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      analytics: {
+        revenueTrend,
+        topCategories,
+        topVendors,
+        customerMetrics: {
+          newCustomers,
+          repeatCustomers: repeatCustomers[0]?.count || 0,
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Get Analytics Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// @desc    Get platform settings (Admin)
+// @route   GET /api/admin/settings
+export const getSettings = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    // For now, return default settings. In a real app, this would be from a Settings model
+    res.status(200).json({
+      success: true,
+      settings: {
+        siteName: 'F2R Marketplace',
+        siteEmail: 'support@f2r.com',
+        supportPhone: '+91 1234567890',
+        defaultCommission: 10,
+        minOrderAmount: 100,
+        freeShippingThreshold: 499,
+        taxRate: 18,
+        maintenanceMode: false,
+        emailNotifications: true,
+        smsNotifications: true,
+        orderConfirmation: true,
+        vendorApprovalRequired: true,
+        productApprovalRequired: false,
+        maxImagesPerProduct: 5,
+        allowCOD: true,
+        allowOnlinePayment: true,
+        razorpayEnabled: true,
+        autoApproveVendors: false,
+      },
+    });
+  } catch (error) {
+    console.error('Get Settings Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// @desc    Update platform settings (Admin)
+// @route   PUT /api/admin/settings
+export const updateSettings = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    // In a real app, this would update a Settings model
+    // For now, just acknowledge the update
+    res.status(200).json({
+      success: true,
+      message: 'Settings updated successfully',
+      settings: req.body,
+    });
+  } catch (error) {
+    console.error('Update Settings Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
