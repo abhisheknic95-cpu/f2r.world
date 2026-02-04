@@ -9,6 +9,7 @@ import {
   addAddress,
   deleteAddress,
   logout,
+  setupAdmin,
 } from '../controllers/authController';
 import { protect } from '../middleware/auth';
 
@@ -20,6 +21,7 @@ router.post('/verify-otp', verifyOTP);
 router.post('/register-seller', registerSeller);
 router.post('/login', login);
 router.post('/logout', logout);
+router.post('/setup-admin', setupAdmin);
 
 // Protected routes
 router.get('/me', protect, getMe);

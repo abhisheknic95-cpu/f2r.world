@@ -313,3 +313,97 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
     message: 'Logged out successfully',
   });
 };
+
+// @desc    Setup admin user (one-time setup)
+// @route   POST /api/auth/setup-admin
+export const setupAdmin = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { setupKey, name, email, phone, password } = req.body;
+
+    // Security: Require a setup key to prevent unauthorized admin creation
+    const ADMIN_SETUP_KEY = process.env.ADMIN_SETUP_KEY || 'F2R_ADMIN_SETUP_2024_SECURE';
+
+    if (setupKey !== ADMIN_SETUP_KEY) {
+      res.status(403).json({ success: false, message: 'Invalid setup key' });
+      return;
+    }
+
+    // Check if admin already exists
+    const existingAdmin = await User.findOne({ role: 'admin' });
+    if (existingAdmin) {
+      // Update existing user to admin if phone matches
+      const userByPhone = await User.findOne({ phone });
+      if (userByPhone) {
+        userByPhone.role = 'admin';
+        userByPhone.name = name || userByPhone.name;
+        userByPhone.email = email || userByPhone.email;
+        userByPhone.password = password;
+        userByPhone.isVerified = true;
+        userByPhone.isActive = true;
+        await userByPhone.save();
+
+        res.status(200).json({
+          success: true,
+          message: 'User upgraded to admin successfully',
+          user: {
+            id: userByPhone._id,
+            name: userByPhone.name,
+            email: userByPhone.email,
+            phone: userByPhone.phone,
+            role: userByPhone.role,
+          },
+        });
+        return;
+      }
+
+      res.status(400).json({
+        success: false,
+        message: 'Admin already exists. Contact support to manage admin users.'
+      });
+      return;
+    }
+
+    // Check if user with this phone/email exists
+    let user = await User.findOne({ $or: [{ email }, { phone }] });
+
+    if (user) {
+      // Upgrade existing user to admin
+      user.role = 'admin';
+      user.name = name || user.name;
+      user.email = email;
+      user.password = password;
+      user.isVerified = true;
+      user.isActive = true;
+      await user.save();
+    } else {
+      // Create new admin user
+      user = await User.create({
+        name: name || 'Admin',
+        email,
+        phone,
+        password,
+        role: 'admin',
+        isVerified: true,
+        isActive: true,
+      });
+    }
+
+    const token = generateToken(user._id.toString());
+
+    res.status(201).json({
+      success: true,
+      message: 'Admin user created successfully',
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error('Setup Admin Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
