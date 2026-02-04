@@ -223,7 +223,7 @@ export const getVendorDashboard = async (req: AuthRequest, res: Response): Promi
           revenueGrowth: revenueGrowth.toFixed(2),
           pendingPayment: vendor.pendingPayment,
         },
-        recentOrders: recentOrders.map((order) => ({
+        recentOrders: recentOrders.map((order: any) => ({
           orderId: order.orderId,
           customerName: order.customer?.name,
           total: order.total,

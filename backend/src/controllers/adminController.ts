@@ -435,7 +435,7 @@ export const exportOrders = async (req: AuthRequest, res: Response): Promise<voi
       .sort({ createdAt: -1 });
 
     // Format data for export
-    const exportData = orders.map((order) => ({
+    const exportData = orders.map((order: any) => ({
       'Order ID': order.orderId,
       Status: order.status,
       'Order Amount': order.total,
