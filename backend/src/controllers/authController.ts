@@ -34,14 +34,14 @@ export const sendOTP = async (req: Request, res: Response): Promise<void> => {
     }
 
     // In production, send OTP via SMS service (MSG91, Twilio, etc.)
-    // For development, we'll log it
+    // For now, we'll return it in response (remove in production with real SMS)
     console.log(`OTP for ${phone}: ${otp}`);
 
     res.status(200).json({
       success: true,
       message: 'OTP sent successfully',
-      // Remove this in production
-      otp: process.env.NODE_ENV === 'development' ? otp : undefined,
+      // TODO: Remove this in production when SMS service is integrated
+      otp: otp,
     });
   } catch (error) {
     console.error('Send OTP Error:', error);

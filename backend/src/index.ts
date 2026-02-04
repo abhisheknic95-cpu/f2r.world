@@ -45,9 +45,24 @@ app.use(cookieParser());
 app.use(compression());
 
 // Enable CORS
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://f2r.world',
+  'https://www.f2r.world',
+  'https://f2rworld.vercel.app',
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(null, false);
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Session-Id'],
