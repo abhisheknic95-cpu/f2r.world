@@ -1,7 +1,30 @@
 import { Request, Response } from 'express';
-import User from '../models/User';
+import User, { IUser } from '../models/User';
 import { generateToken, generateOTP } from '../utils/generateToken';
 import { AuthRequest } from '../middleware/auth';
+import { sendOTPViaSMS } from '../services/sms';
+
+// @desc    Google OAuth callback
+// @route   GET /api/auth/google/callback
+export const googleCallback = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const user = req.user as IUser;
+
+    if (!user) {
+      res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/login?error=google_auth_failed`);
+      return;
+    }
+
+    const token = generateToken(user._id.toString());
+
+    // Redirect to frontend with token
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    res.redirect(`${frontendUrl}/auth/callback?token=${token}`);
+  } catch (error) {
+    console.error('Google Callback Error:', error);
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/login?error=server_error`);
+  }
+};
 
 // @desc    Register user with phone and OTP
 // @route   POST /api/auth/send-otp
@@ -33,15 +56,15 @@ export const sendOTP = async (req: Request, res: Response): Promise<void> => {
       });
     }
 
-    // In production, send OTP via SMS service (MSG91, Twilio, etc.)
-    // For now, we'll return it in response (remove in production with real SMS)
-    console.log(`OTP for ${phone}: ${otp}`);
+    // Send OTP via SMS service (MSG91)
+    // In development mode, it just logs to console
+    await sendOTPViaSMS(phone, otp);
 
     res.status(200).json({
       success: true,
       message: 'OTP sent successfully',
-      // TODO: Remove this in production when SMS service is integrated
-      otp: otp,
+      // Only include OTP in development mode for testing
+      ...(process.env.NODE_ENV === 'development' && { otp }),
     });
   } catch (error) {
     console.error('Send OTP Error:', error);

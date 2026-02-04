@@ -9,16 +9,19 @@ import {
   cancelOrder,
   getAllOrders,
   updateOrderStatus,
+  downloadInvoice,
 } from '../controllers/orderController';
 import { protect, authorize } from '../middleware/auth';
+import { validateOrder, validatePaymentVerification, validatePagination } from '../middleware/validators';
 
 const router = express.Router();
 
 // Customer routes
-router.post('/', protect, createOrder);
-router.post('/verify-payment', protect, verifyPayment);
-router.get('/my-orders', protect, getMyOrders);
+router.post('/', protect, validateOrder, createOrder);
+router.post('/verify-payment', protect, validatePaymentVerification, verifyPayment);
+router.get('/my-orders', protect, validatePagination, getMyOrders);
 router.get('/:orderId', protect, getOrder);
+router.get('/:orderId/invoice', protect, downloadInvoice);
 router.put('/:orderId/cancel', protect, cancelOrder);
 
 // Vendor routes

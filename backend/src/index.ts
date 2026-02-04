@@ -6,6 +6,8 @@ import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import connectDB from './config/database';
+import passport from 'passport';
+import { initializePassport } from './config/passport';
 
 // Route imports
 import authRoutes from './routes/auth';
@@ -14,12 +16,17 @@ import orderRoutes from './routes/orders';
 import cartRoutes from './routes/cart';
 import vendorRoutes from './routes/vendors';
 import adminRoutes from './routes/admin';
+import reviewRoutes from './routes/reviews';
+import wishlistRoutes from './routes/wishlist';
 
 // Load env vars
 dotenv.config();
 
 // Connect to database
 connectDB();
+
+// Initialize passport
+initializePassport();
 
 const app = express();
 
@@ -43,6 +50,9 @@ app.use(cookieParser());
 
 // Compression
 app.use(compression());
+
+// Initialize Passport
+app.use(passport.initialize());
 
 // Enable CORS
 const allowedOrigins = [
@@ -79,6 +89,8 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/vendors', vendorRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/wishlist', wishlistRoutes);
 
 // Health check
 app.get('/api/health', (req: Request, res: Response) => {

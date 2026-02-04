@@ -6,6 +6,8 @@ export interface IUser extends Document {
   email: string;
   phone: string;
   password?: string;
+  googleId?: string;
+  profilePicture?: string;
   role: 'customer' | 'seller' | 'admin';
   isActive: boolean;
   isVerified: boolean;
@@ -50,6 +52,14 @@ const userSchema = new Schema<IUser>(
       type: String,
       minlength: 6,
       select: false,
+    },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true, // Allows null/undefined values while maintaining uniqueness
+    },
+    profilePicture: {
+      type: String,
     },
     role: {
       type: String,

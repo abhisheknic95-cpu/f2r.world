@@ -3,6 +3,13 @@
 :root {
   --primary: #f97316;
   --primary-dark: #ea580c;
+  --toast-bg: #333;
+  --toast-color: #fff;
+}
+
+.dark {
+  --toast-bg: #1f2937;
+  --toast-color: #f9fafb;
 }
 
 * {
@@ -25,13 +32,25 @@ body {
   background: #f1f1f1;
 }
 
+.dark ::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
 ::-webkit-scrollbar-thumb {
   background: #c1c1c1;
   border-radius: 4px;
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
 ::-webkit-scrollbar-thumb:hover {
   background: #a1a1a1;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
 }
 
 /* Line clamp utility */
@@ -72,6 +91,11 @@ body {
   animation: skeleton-loading 1.5s infinite;
 }
 
+.dark .skeleton {
+  background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+  background-size: 200% 100%;
+}
+
 @keyframes skeleton-loading {
   0% {
     background-position: 200% 0;
@@ -101,8 +125,16 @@ body {
   @apply bg-gray-100 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors;
 }
 
+.dark .btn-secondary {
+  @apply bg-gray-800 text-gray-300 hover:bg-gray-700;
+}
+
 .btn-outline {
   @apply border-2 border-orange-500 text-orange-500 px-6 py-2 rounded-lg font-medium hover:bg-orange-50 transition-colors;
+}
+
+.dark .btn-outline {
+  @apply hover:bg-orange-500/10;
 }
 
 /* Card hover effect */
@@ -132,7 +164,17 @@ textarea:focus {
   animation: spin 1s linear infinite;
 }
 
+.dark .spinner {
+  border: 3px solid #374151;
+  border-top: 3px solid #f97316;
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Dark mode transitions */
+html.dark {
+  color-scheme: dark;
 }

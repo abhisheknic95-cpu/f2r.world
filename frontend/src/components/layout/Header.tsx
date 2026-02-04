@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import useStore from '@/store/useStore';
 import { categories } from '@/lib/utils';
+import ThemeToggle from '../ThemeToggle';
 
 export default function Header() {
   const router = useRouter();
@@ -39,7 +40,7 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm">
+    <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-sm dark:shadow-gray-800">
       {/* Top Bar */}
       <div className="bg-gradient-to-r from-orange-500 to-pink-500 text-white text-center py-1 text-sm">
         Free Delivery on orders above ₹499 | COD Available
@@ -64,7 +65,7 @@ export default function Header() {
                 placeholder="Search for footwear, brands and more..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-4 pr-12 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500 bg-gray-50"
+                className="w-full pl-4 pr-12 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:border-orange-500 bg-gray-50 dark:bg-gray-800 dark:text-white"
               />
               <button
                 type="submit"
@@ -77,11 +78,14 @@ export default function Header() {
 
           {/* Right Actions */}
           <div className="flex items-center space-x-4">
+            {/* Theme Toggle */}
+            <ThemeToggle />
+
             {/* User Menu */}
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center space-x-1 text-gray-700 hover:text-orange-500"
+                className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-orange-500"
               >
                 <User className="w-5 h-5" />
                 <span className="hidden sm:block text-sm">
@@ -91,16 +95,16 @@ export default function Header() {
               </button>
 
               {showUserMenu && (
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border py-2 z-50">
+                <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border dark:border-gray-700 py-2 z-50">
                   {isAuthenticated ? (
                     <>
-                      <div className="px-4 py-2 border-b">
-                        <p className="font-medium">{user?.name}</p>
-                        <p className="text-sm text-gray-500">{user?.phone}</p>
+                      <div className="px-4 py-2 border-b dark:border-gray-700">
+                        <p className="font-medium dark:text-white">{user?.name}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{user?.phone}</p>
                       </div>
                       <Link
                         href="/orders"
-                        className="flex items-center px-4 py-2 hover:bg-gray-50"
+                        className="flex items-center px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-200"
                         onClick={() => setShowUserMenu(false)}
                       >
                         <Package className="w-4 h-4 mr-3" />
@@ -108,7 +112,7 @@ export default function Header() {
                       </Link>
                       <Link
                         href="/wishlist"
-                        className="flex items-center px-4 py-2 hover:bg-gray-50"
+                        className="flex items-center px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-200"
                         onClick={() => setShowUserMenu(false)}
                       >
                         <Heart className="w-4 h-4 mr-3" />
@@ -167,7 +171,7 @@ export default function Header() {
             </div>
 
             {/* Cart */}
-            <Link href="/cart" className="relative flex items-center space-x-1 text-gray-700 hover:text-orange-500">
+            <Link href="/cart" className="relative flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-orange-500">
               <ShoppingCart className="w-5 h-5" />
               <span className="hidden sm:block text-sm">Cart</span>
               {cartCount > 0 && (
@@ -208,14 +212,14 @@ export default function Header() {
       </div>
 
       {/* Categories Bar */}
-      <nav className="border-t bg-gray-50 hidden md:block">
+      <nav className="border-t dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hidden md:block">
         <div className="container mx-auto px-4">
           <ul className="flex items-center space-x-8 h-10 text-sm">
             {categories.map((cat) => (
               <li key={cat.id}>
                 <Link
                   href={`/products?category=${cat.id}`}
-                  className="flex items-center space-x-1 text-gray-700 hover:text-orange-500 transition"
+                  className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-orange-500 transition"
                 >
                   <span>{cat.icon}</span>
                   <span>{cat.name}</span>
@@ -228,15 +232,15 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {showMenu && (
-        <div className="md:hidden bg-white border-t">
+        <div className="md:hidden bg-white dark:bg-gray-800 border-t dark:border-gray-700">
           <div className="container mx-auto px-4 py-4">
-            <h3 className="font-semibold mb-2">Categories</h3>
+            <h3 className="font-semibold mb-2 dark:text-white">Categories</h3>
             <ul className="space-y-2">
               {categories.map((cat) => (
                 <li key={cat.id}>
                   <Link
                     href={`/products?category=${cat.id}`}
-                    className="flex items-center space-x-2 py-2 text-gray-700"
+                    className="flex items-center space-x-2 py-2 text-gray-700 dark:text-gray-300"
                     onClick={() => setShowMenu(false)}
                   >
                     <span>{cat.icon}</span>

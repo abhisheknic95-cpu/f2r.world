@@ -7,6 +7,7 @@ import Coupon from '../models/Coupon';
 import { AuthRequest } from '../middleware/auth';
 import { createRazorpayOrder, verifyRazorpaySignature } from '../services/razorpay';
 import { createShipment } from '../services/shiprocket';
+import { generateInvoice } from '../services/invoice';
 
 // @desc    Create order
 // @route   POST /api/orders
@@ -175,6 +176,12 @@ export const verifyPayment = async (req: AuthRequest, res: Response): Promise<vo
 
     if (!order) {
       res.status(404).json({ success: false, message: 'Order not found' });
+      return;
+    }
+
+    // Security: Verify the order belongs to the requesting user
+    if (order.customer.toString() !== req.user?._id.toString()) {
+      res.status(403).json({ success: false, message: 'Not authorized to verify this payment' });
       return;
     }
 
@@ -526,5 +533,77 @@ export const updateOrderStatus = async (req: AuthRequest, res: Response): Promis
   } catch (error) {
     console.error('Update Order Status Error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// @desc    Download invoice
+// @route   GET /api/orders/:orderId/invoice
+export const downloadInvoice = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const order = await Order.findOne({ orderId: req.params.orderId })
+      .populate('customer', 'name email phone');
+
+    if (!order) {
+      res.status(404).json({ success: false, message: 'Order not found' });
+      return;
+    }
+
+    // Check if user is authorized to download invoice
+    const isCustomer = order.customer._id.toString() === req.user?._id.toString();
+    const isAdmin = req.user?.role === 'admin';
+
+    if (!isCustomer && !isAdmin) {
+      res.status(403).json({ success: false, message: 'Not authorized to download this invoice' });
+      return;
+    }
+
+    // Only allow invoice download for confirmed/delivered orders with paid status
+    if (order.paymentMethod === 'razorpay' && order.paymentStatus !== 'paid') {
+      res.status(400).json({ success: false, message: 'Invoice available only for paid orders' });
+      return;
+    }
+
+    // Generate invoice PDF
+    const invoiceBuffer = await generateInvoice({
+      orderId: order.orderId,
+      items: order.items.map((item) => ({
+        name: item.name,
+        size: item.size,
+        color: item.color,
+        quantity: item.quantity,
+        mrp: item.mrp,
+        finalPrice: item.finalPrice,
+      })),
+      subtotal: order.subtotal,
+      shippingCharges: order.shippingCharges,
+      couponDiscount: order.couponDiscount,
+      total: order.total,
+      paymentMethod: order.paymentMethod,
+      paymentStatus: order.paymentStatus,
+      shippingAddress: {
+        name: order.shippingAddress.name,
+        phone: order.shippingAddress.phone,
+        address: order.shippingAddress.address,
+        city: order.shippingAddress.city,
+        state: order.shippingAddress.state,
+        pincode: order.shippingAddress.pincode,
+      },
+      createdAt: order.createdAt,
+      customer: {
+        name: (order.customer as any).name,
+        email: (order.customer as any).email,
+        phone: (order.customer as any).phone,
+      },
+    });
+
+    // Set response headers for PDF download
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=Invoice-${order.orderId}.pdf`);
+    res.setHeader('Content-Length', invoiceBuffer.length);
+
+    res.send(invoiceBuffer);
+  } catch (error) {
+    console.error('Download Invoice Error:', error);
+    res.status(500).json({ success: false, message: 'Failed to generate invoice' });
   }
 };

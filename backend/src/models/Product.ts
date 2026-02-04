@@ -29,6 +29,7 @@ export interface IProduct extends Document {
   gender: 'men' | 'women' | 'kids' | 'unisex';
   tags: string[];
   rating: number;
+  averageRating: number;
   totalReviews: number;
   totalSold: number;
   isActive: boolean;
@@ -110,6 +111,10 @@ const productSchema = new Schema<IProduct>(
     },
     tags: [String],
     rating: {
+      type: Number,
+      default: 0,
+    },
+    averageRating: {
       type: Number,
       default: 0,
     },

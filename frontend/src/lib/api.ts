@@ -93,6 +93,8 @@ export const orderAPI = {
   getMyOrders: (params?: any) => api.get('/orders/my-orders', { params }),
   getOrder: (orderId: string) => api.get(`/orders/${orderId}`),
   cancelOrder: (orderId: string) => api.put(`/orders/${orderId}/cancel`),
+  downloadInvoice: (orderId: string) =>
+    api.get(`/orders/${orderId}/invoice`, { responseType: 'blob' }),
   // Vendor APIs
   getVendorOrders: (params?: any) => api.get('/orders/vendor/orders', { params }),
   updateItemStatus: (orderId: string, itemId: string, status: string) =>
@@ -106,6 +108,26 @@ export const vendorAPI = {
   updateProfile: (data: any) => api.put('/vendors/profile', data),
   getDashboard: () => api.get('/vendors/dashboard'),
   getFinance: (params?: any) => api.get('/vendors/finance', { params }),
+};
+
+// Review APIs
+export const reviewAPI = {
+  getProductReviews: (productId: string, params?: any) =>
+    api.get(`/reviews/product/${productId}`, { params }),
+  createReview: (data: any) => api.post('/reviews', data),
+  updateReview: (reviewId: string, data: any) => api.put(`/reviews/${reviewId}`, data),
+  deleteReview: (reviewId: string) => api.delete(`/reviews/${reviewId}`),
+  markHelpful: (reviewId: string) => api.post(`/reviews/${reviewId}/helpful`),
+  getMyReviews: (params?: any) => api.get('/reviews/my-reviews', { params }),
+};
+
+// Wishlist APIs
+export const wishlistAPI = {
+  getWishlist: () => api.get('/wishlist'),
+  addToWishlist: (productId: string) => api.post('/wishlist/add', { productId }),
+  removeFromWishlist: (productId: string) => api.delete(`/wishlist/remove/${productId}`),
+  checkWishlist: (productId: string) => api.get(`/wishlist/check/${productId}`),
+  clearWishlist: () => api.delete('/wishlist/clear'),
 };
 
 // Admin APIs
