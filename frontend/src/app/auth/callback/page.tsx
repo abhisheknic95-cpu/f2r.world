@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useAuthStore } from '@/store/authStore';
+import { useStore } from '@/store/useStore';
 import { Loader2 } from 'lucide-react';
 
 export default function AuthCallbackPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { setAuth } = useAuthStore();
+  const { setUser, setToken } = useStore();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -46,7 +46,8 @@ export default function AuthCallbackPage() {
         const data = await response.json();
 
         if (data.success && data.user) {
-          setAuth(data.user, token);
+          setUser(data.user);
+          setToken(token);
 
           // Redirect based on role
           if (data.user.role === 'admin') {
@@ -73,7 +74,7 @@ export default function AuthCallbackPage() {
     };
 
     handleCallback();
-  }, [searchParams, router, setAuth]);
+  }, [searchParams, router, setUser, setToken]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
