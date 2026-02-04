@@ -40,8 +40,8 @@ export default function AnalyticsPage() {
   const fetchAnalytics = async () => {
     try {
       setLoading(true);
-      const response = await adminAPI.getDashboard({ days: parseInt(dateRange) });
-      setAnalytics(response.data);
+      const response = await adminAPI.getAnalytics({ period: dateRange });
+      setAnalytics(response.data.analytics || response.data);
     } catch (error) {
       console.error('Error fetching analytics:', error);
     } finally {
