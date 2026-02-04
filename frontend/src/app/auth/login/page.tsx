@@ -134,7 +134,7 @@ function LoginForm() {
 
             {/* Google Sign In */}
             <a
-              href={`${process.env.NEXT_PUBLIC_API_URL}/api/auth/google`}
+              href={`${process.env.NEXT_PUBLIC_API_URL || 'https://f2rworld-production.up.railway.app/api'}/auth/google`}
               className="w-full flex items-center justify-center gap-3 border border-gray-300 py-3 rounded-lg font-medium hover:bg-gray-50 transition"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">

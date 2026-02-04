@@ -37,7 +37,7 @@ export default function AuthCallbackPage() {
         localStorage.setItem('token', token);
 
         // Fetch user data
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://f2rworld-production.up.railway.app/api'}/auth/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
