@@ -114,7 +114,7 @@ body {
 input:focus,
 select:focus,
 textarea:focus {
-  @apply outline-none ring-2 ring-orange-500 ring-opacity-50;
+  @apply outline-none ring-2 ring-orange-500/50;
 }
 
 /* Gradient text */
