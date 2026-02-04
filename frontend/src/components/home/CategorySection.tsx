@@ -15,9 +15,9 @@ export default function CategorySection() {
   };
 
   return (
-    <section className="py-12 bg-gray-50">
+    <section className="py-12 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4">
-        <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
+        <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 text-gray-900 dark:text-white">
           Shop by Category
         </h2>
 
@@ -28,13 +28,13 @@ export default function CategorySection() {
               href={`/products?category=${category.id}`}
               className="group flex flex-col items-center"
             >
-              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-white shadow-md overflow-hidden group-hover:shadow-lg transition-all group-hover:scale-105">
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-white dark:bg-gray-800 shadow-md overflow-hidden group-hover:shadow-lg transition-all group-hover:scale-105">
                 <div
                   className="w-full h-full bg-cover bg-center"
                   style={{ backgroundImage: `url(${categoryImages[category.id]})` }}
                 />
               </div>
-              <span className="mt-2 text-sm font-medium text-gray-700 group-hover:text-orange-500 transition">
+              <span className="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-orange-500 transition">
                 {category.name}
               </span>
             </Link>

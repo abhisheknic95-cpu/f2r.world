@@ -10,35 +10,35 @@ export default function Home() {
       <HeroBanner />
 
       {/* Features Strip */}
-      <section className="py-6 bg-white border-b">
+      <section className="py-6 bg-white dark:bg-gray-800 border-b dark:border-gray-700">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="flex items-center space-x-3 p-3">
               <Truck className="w-8 h-8 text-orange-500" />
               <div>
-                <p className="font-semibold text-sm">Free Delivery</p>
-                <p className="text-xs text-gray-500">On orders above ₹499</p>
+                <p className="font-semibold text-sm dark:text-white">Free Delivery</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">On orders above ₹499</p>
               </div>
             </div>
             <div className="flex items-center space-x-3 p-3">
               <Shield className="w-8 h-8 text-orange-500" />
               <div>
-                <p className="font-semibold text-sm">100% Authentic</p>
-                <p className="text-xs text-gray-500">Genuine products only</p>
+                <p className="font-semibold text-sm dark:text-white">100% Authentic</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Genuine products only</p>
               </div>
             </div>
             <div className="flex items-center space-x-3 p-3">
               <CreditCard className="w-8 h-8 text-orange-500" />
               <div>
-                <p className="font-semibold text-sm">Secure Payment</p>
-                <p className="text-xs text-gray-500">COD & Online options</p>
+                <p className="font-semibold text-sm dark:text-white">Secure Payment</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">COD & Online options</p>
               </div>
             </div>
             <div className="flex items-center space-x-3 p-3">
               <Headphones className="w-8 h-8 text-orange-500" />
               <div>
-                <p className="font-semibold text-sm">24/7 Support</p>
-                <p className="text-xs text-gray-500">Dedicated help center</p>
+                <p className="font-semibold text-sm dark:text-white">24/7 Support</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Dedicated help center</p>
               </div>
             </div>
           </div>
@@ -84,7 +84,7 @@ export default function Home() {
       />
 
       {/* Men's Collection */}
-      <div className="bg-gray-50">
+      <div className="bg-gray-50 dark:bg-gray-900">
         <FeaturedProducts
           title="Men's Collection"
           subtitle="Stylish footwear for men"

@@ -54,7 +54,7 @@ export default function Header() {
             <div className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
               F2R
             </div>
-            <span className="hidden sm:block text-xs text-gray-500">Footwear to Retail</span>
+            <span className="hidden sm:block text-xs text-gray-500 dark:text-gray-400">Footwear to Retail</span>
           </Link>
 
           {/* Search Bar */}
@@ -121,7 +121,7 @@ export default function Header() {
                       {user?.role === 'seller' && (
                         <Link
                           href="/seller"
-                          className="flex items-center px-4 py-2 hover:bg-gray-50"
+                          className="flex items-center px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-200"
                           onClick={() => setShowUserMenu(false)}
                         >
                           <Store className="w-4 h-4 mr-3" />
@@ -131,7 +131,7 @@ export default function Header() {
                       {user?.role === 'admin' && (
                         <Link
                           href="/admin"
-                          className="flex items-center px-4 py-2 hover:bg-gray-50"
+                          className="flex items-center px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-200"
                           onClick={() => setShowUserMenu(false)}
                         >
                           <Store className="w-4 h-4 mr-3" />
@@ -140,7 +140,7 @@ export default function Header() {
                       )}
                       <button
                         onClick={handleLogout}
-                        className="flex items-center w-full px-4 py-2 hover:bg-gray-50 text-red-500"
+                        className="flex items-center w-full px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-red-500"
                       >
                         <LogOut className="w-4 h-4 mr-3" />
                         Logout
@@ -150,15 +150,15 @@ export default function Header() {
                     <>
                       <Link
                         href="/auth/login"
-                        className="block px-4 py-2 hover:bg-gray-50"
+                        className="block px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-200"
                         onClick={() => setShowUserMenu(false)}
                       >
                         Login / Sign Up
                       </Link>
-                      <div className="border-t my-1" />
+                      <div className="border-t dark:border-gray-700 my-1" />
                       <Link
                         href="/seller/register"
-                        className="flex items-center px-4 py-2 hover:bg-gray-50"
+                        className="flex items-center px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-200"
                         onClick={() => setShowUserMenu(false)}
                       >
                         <Store className="w-4 h-4 mr-3" />
@@ -184,7 +184,7 @@ export default function Header() {
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setShowMenu(!showMenu)}
-              className="md:hidden p-2"
+              className="md:hidden p-2 dark:text-gray-300"
             >
               {showMenu ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -199,7 +199,7 @@ export default function Header() {
               placeholder="Search for footwear..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-4 pr-12 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500 bg-gray-50"
+              className="w-full pl-4 pr-12 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:border-orange-500 bg-gray-50 dark:bg-gray-800 dark:text-white"
             />
             <button
               type="submit"

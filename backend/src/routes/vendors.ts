@@ -11,11 +11,12 @@ import {
   toggleVendorStatus,
 } from '../controllers/vendorController';
 import { protect, authorize } from '../middleware/auth';
+import { validateVendorRegistration } from '../middleware/validators';
 
 const router = express.Router();
 
 // Seller routes
-router.post('/register', protect as any, registerVendor as any);
+router.post('/register', protect as any, validateVendorRegistration as any, registerVendor as any);
 router.get('/profile', protect as any, authorize('seller') as any, getVendorProfile as any);
 router.put('/profile', protect as any, authorize('seller') as any, updateVendorProfile as any);
 router.get('/dashboard', protect as any, authorize('seller') as any, getVendorDashboard as any);

@@ -72,19 +72,19 @@ function ProductsContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               {filters.search
                 ? `Search results for "${filters.search}"`
                 : filters.category
                 ? categories.find((c) => c.id === filters.category)?.name || 'Products'
                 : 'All Products'}
             </h1>
-            <p className="text-gray-500 text-sm mt-1">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
               {products.length} products found
             </p>
           </div>
@@ -92,7 +92,7 @@ function ProductsContent() {
           {/* Mobile Filter Toggle */}
           <button
             onClick={() => setShowFilters(true)}
-            className="lg:hidden flex items-center gap-2 bg-white px-4 py-2 rounded-lg border"
+            className="lg:hidden flex items-center gap-2 bg-white dark:bg-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg border dark:border-gray-700"
           >
             <Filter className="w-4 h-4" />
             Filters
@@ -102,9 +102,9 @@ function ProductsContent() {
         <div className="flex gap-6">
           {/* Sidebar Filters - Desktop */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="bg-white rounded-lg shadow-sm p-4 sticky top-24">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sticky top-24">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold">Filters</h3>
+                <h3 className="font-semibold dark:text-white">Filters</h3>
                 <button onClick={clearFilters} className="text-sm text-orange-500 hover:underline">
                   Clear All
                 </button>
@@ -112,10 +112,10 @@ function ProductsContent() {
 
               {/* Category */}
               <div className="mb-4">
-                <h4 className="font-medium text-sm mb-2">Category</h4>
+                <h4 className="font-medium text-sm mb-2 dark:text-gray-200">Category</h4>
                 <div className="space-y-2">
                   {categories.map((cat) => (
-                    <label key={cat.id} className="flex items-center">
+                    <label key={cat.id} className="flex items-center dark:text-gray-300">
                       <input
                         type="radio"
                         name="category"
@@ -131,10 +131,10 @@ function ProductsContent() {
 
               {/* Gender */}
               <div className="mb-4">
-                <h4 className="font-medium text-sm mb-2">Gender</h4>
+                <h4 className="font-medium text-sm mb-2 dark:text-gray-200">Gender</h4>
                 <div className="space-y-2">
                   {['men', 'women', 'kids', 'unisex'].map((g) => (
-                    <label key={g} className="flex items-center">
+                    <label key={g} className="flex items-center dark:text-gray-300">
                       <input
                         type="radio"
                         name="gender"
@@ -150,21 +150,21 @@ function ProductsContent() {
 
               {/* Price Range */}
               <div className="mb-4">
-                <h4 className="font-medium text-sm mb-2">Price Range</h4>
+                <h4 className="font-medium text-sm mb-2 dark:text-gray-200">Price Range</h4>
                 <div className="flex gap-2">
                   <input
                     type="number"
                     placeholder="Min"
                     value={filters.minPrice}
                     onChange={(e) => handleFilterChange('minPrice', e.target.value)}
-                    className="w-full px-2 py-1 border rounded text-sm"
+                    className="w-full px-2 py-1 border dark:border-gray-600 rounded text-sm dark:bg-gray-700 dark:text-white"
                   />
                   <input
                     type="number"
                     placeholder="Max"
                     value={filters.maxPrice}
                     onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
-                    className="w-full px-2 py-1 border rounded text-sm"
+                    className="w-full px-2 py-1 border dark:border-gray-600 rounded text-sm dark:bg-gray-700 dark:text-white"
                   />
                 </div>
               </div>
@@ -174,10 +174,10 @@ function ProductsContent() {
           {/* Mobile Filters Overlay */}
           {showFilters && (
             <div className="fixed inset-0 bg-black/50 z-50 lg:hidden">
-              <div className="absolute right-0 top-0 h-full w-80 bg-white p-4 overflow-y-auto">
+              <div className="absolute right-0 top-0 h-full w-80 bg-white dark:bg-gray-800 p-4 overflow-y-auto">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-lg">Filters</h3>
-                  <button onClick={() => setShowFilters(false)}>
+                  <h3 className="font-semibold text-lg dark:text-white">Filters</h3>
+                  <button onClick={() => setShowFilters(false)} className="dark:text-gray-300">
                     <X className="w-6 h-6" />
                   </button>
                 </div>
@@ -186,10 +186,10 @@ function ProductsContent() {
                 <div className="space-y-4">
                   {/* Category */}
                   <div>
-                    <h4 className="font-medium text-sm mb-2">Category</h4>
+                    <h4 className="font-medium text-sm mb-2 dark:text-gray-200">Category</h4>
                     <div className="space-y-2">
                       {categories.map((cat) => (
-                        <label key={cat.id} className="flex items-center">
+                        <label key={cat.id} className="flex items-center dark:text-gray-300">
                           <input
                             type="radio"
                             name="category-mobile"
@@ -205,10 +205,10 @@ function ProductsContent() {
 
                   {/* Gender */}
                   <div>
-                    <h4 className="font-medium text-sm mb-2">Gender</h4>
+                    <h4 className="font-medium text-sm mb-2 dark:text-gray-200">Gender</h4>
                     <div className="space-y-2">
                       {['men', 'women', 'kids', 'unisex'].map((g) => (
-                        <label key={g} className="flex items-center">
+                        <label key={g} className="flex items-center dark:text-gray-300">
                           <input
                             type="radio"
                             name="gender-mobile"
@@ -236,14 +236,14 @@ function ProductsContent() {
           {/* Products Grid */}
           <div className="flex-1">
             {/* Sort */}
-            <div className="bg-white rounded-lg shadow-sm p-3 mb-4 flex items-center justify-between">
-              <span className="text-sm text-gray-500">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-3 mb-4 flex items-center justify-between">
+              <span className="text-sm text-gray-500 dark:text-gray-400">
                 Showing {products.length} products
               </span>
               <select
                 value={filters.sort}
                 onChange={(e) => handleFilterChange('sort', e.target.value)}
-                className="border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-orange-500"
+                className="border dark:border-gray-600 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-orange-500 dark:bg-gray-700 dark:text-white"
               >
                 <option value="newest">Newest First</option>
                 <option value="popular">Most Popular</option>
@@ -272,17 +272,17 @@ function ProductsContent() {
                     <button
                       onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                       disabled={currentPage === 1}
-                      className="px-4 py-2 border rounded-lg disabled:opacity-50"
+                      className="px-4 py-2 border dark:border-gray-600 rounded-lg disabled:opacity-50 dark:text-gray-200 dark:bg-gray-800"
                     >
                       Previous
                     </button>
-                    <span className="px-4 py-2">
+                    <span className="px-4 py-2 dark:text-gray-200">
                       Page {currentPage} of {totalPages}
                     </span>
                     <button
                       onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                       disabled={currentPage === totalPages}
-                      className="px-4 py-2 border rounded-lg disabled:opacity-50"
+                      className="px-4 py-2 border dark:border-gray-600 rounded-lg disabled:opacity-50 dark:text-gray-200 dark:bg-gray-800"
                     >
                       Next
                     </button>
@@ -290,8 +290,8 @@ function ProductsContent() {
                 )}
               </>
             ) : (
-              <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-                <p className="text-gray-500 text-lg">No products found</p>
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-12 text-center">
+                <p className="text-gray-500 dark:text-gray-400 text-lg">No products found</p>
                 <button
                   onClick={clearFilters}
                   className="mt-4 text-orange-500 hover:underline"

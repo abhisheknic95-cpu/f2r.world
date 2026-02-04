@@ -52,9 +52,9 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Link href={`/products/${product.slug}`}>
-      <div className="group bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100">
+      <div className="group bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700">
         {/* Image Container */}
-        <div className="relative aspect-square overflow-hidden bg-gray-50">
+        <div className="relative aspect-square overflow-hidden bg-gray-50 dark:bg-gray-700">
           <Image
             src={product.images[0] || '/placeholder-shoe.jpg'}
             alt={product.name}
@@ -99,13 +99,13 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="p-3">
           {/* Brand */}
           {product.brand && (
-            <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
               {product.brand}
             </p>
           )}
 
           {/* Name */}
-          <h3 className="font-medium text-gray-800 text-sm line-clamp-2 min-h-[2.5rem]">
+          <h3 className="font-medium text-gray-800 dark:text-gray-100 text-sm line-clamp-2 min-h-[2.5rem]">
             {product.name}
           </h3>
 
@@ -116,18 +116,18 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <span>{product.rating.toFixed(1)}</span>
                 <Star className="w-3 h-3 ml-0.5 fill-current" />
               </div>
-              <span className="text-xs text-gray-500">({product.totalReviews})</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">({product.totalReviews})</span>
             </div>
           )}
 
           {/* Price */}
           <div className="mt-2 flex items-baseline space-x-2">
-            <span className="text-lg font-bold text-gray-900">
+            <span className="text-lg font-bold text-gray-900 dark:text-white">
               {formatPrice(finalPrice)}
             </span>
             {discount > 0 && (
               <>
-                <span className="text-sm text-gray-400 line-through">
+                <span className="text-sm text-gray-400 dark:text-gray-500 line-through">
                   {formatPrice(product.mrp)}
                 </span>
               </>
@@ -136,7 +136,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
           {/* Additional Discount Tag */}
           {(product.vendorDiscount > 0 || product.websiteDiscount > 0) && (
-            <p className="text-xs text-green-600 mt-1">
+            <p className="text-xs text-green-600 dark:text-green-400 mt-1">
               Extra {product.vendorDiscount + product.websiteDiscount}% off
             </p>
           )}

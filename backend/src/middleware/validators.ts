@@ -320,6 +320,55 @@ export const validateCartItem = [
   handleValidationErrors,
 ];
 
+// Vendor registration validation
+export const validateVendorRegistration = [
+  body('businessName')
+    .trim()
+    .notEmpty()
+    .withMessage('Business name is required')
+    .isLength({ min: 2, max: 100 })
+    .withMessage('Business name must be between 2 and 100 characters'),
+  body('businessEmail')
+    .trim()
+    .notEmpty()
+    .withMessage('Business email is required')
+    .isEmail()
+    .withMessage('Please enter a valid business email'),
+  body('businessPhone')
+    .trim()
+    .notEmpty()
+    .withMessage('Business phone is required')
+    .matches(/^[6-9]\d{9}$/)
+    .withMessage('Please enter a valid 10-digit Indian phone number'),
+  body('panNumber')
+    .trim()
+    .notEmpty()
+    .withMessage('PAN number is required')
+    .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)
+    .withMessage('Please enter a valid PAN number (e.g., ABCDE1234F)'),
+  body('bankDetails.accountHolderName')
+    .trim()
+    .notEmpty()
+    .withMessage('Account holder name is required'),
+  body('bankDetails.accountNumber')
+    .trim()
+    .notEmpty()
+    .withMessage('Account number is required')
+    .isNumeric()
+    .withMessage('Account number must contain only digits'),
+  body('bankDetails.ifscCode')
+    .trim()
+    .notEmpty()
+    .withMessage('IFSC code is required')
+    .matches(/^[A-Z]{4}0[A-Z0-9]{6}$/)
+    .withMessage('Please enter a valid IFSC code (e.g., SBIN0001234)'),
+  body('bankDetails.bankName')
+    .trim()
+    .notEmpty()
+    .withMessage('Bank name is required'),
+  handleValidationErrors,
+];
+
 // Wishlist validation
 export const validateWishlistItem = [
   body('productId')

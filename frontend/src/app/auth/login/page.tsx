@@ -75,24 +75,24 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md p-8">
         {/* Logo */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
             F2R
           </h1>
-          <p className="text-gray-500 mt-2">Login to continue shopping</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">Login to continue shopping</p>
         </div>
 
         {step === 'phone' ? (
           <form onSubmit={handleSendOTP}>
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Mobile Number
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500 dark:text-gray-400">
                   <Phone className="w-5 h-5 mr-2" />
                   <span>+91</span>
                 </div>
@@ -101,7 +101,7 @@ function LoginForm() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
                   placeholder="Enter your mobile number"
-                  className="w-full pl-24 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500"
+                  className="w-full pl-24 pr-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:border-orange-500 dark:bg-gray-700 dark:text-white"
                   maxLength={10}
                 />
               </div>
@@ -125,17 +125,17 @@ function LoginForm() {
             {/* Divider */}
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200" />
+                <div className="w-full border-t border-gray-200 dark:border-gray-600" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500">or continue with</span>
+                <span className="px-4 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">or continue with</span>
               </div>
             </div>
 
             {/* Google Sign In */}
             <a
               href={`${process.env.NEXT_PUBLIC_API_URL || 'https://f2rworld-production.up.railway.app/api'}/auth/google`}
-              className="w-full flex items-center justify-center gap-3 border border-gray-300 py-3 rounded-lg font-medium hover:bg-gray-50 transition"
+              className="w-full flex items-center justify-center gap-3 border border-gray-300 dark:border-gray-600 py-3 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-200 transition"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -161,10 +161,10 @@ function LoginForm() {
         ) : (
           <form onSubmit={handleVerifyOTP}>
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Enter OTP
               </label>
-              <p className="text-sm text-gray-500 mb-4">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                 We've sent a 6-digit OTP to +91 {phone}
                 <button
                   type="button"
@@ -179,7 +179,7 @@ function LoginForm() {
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                 placeholder="Enter 6-digit OTP"
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500 text-center text-2xl tracking-widest"
+                className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:border-orange-500 text-center text-2xl tracking-widest dark:bg-gray-700 dark:text-white"
                 maxLength={6}
               />
             </div>
@@ -207,8 +207,8 @@ function LoginForm() {
           </form>
         )}
 
-        <div className="mt-8 pt-6 border-t text-center">
-          <p className="text-sm text-gray-500">
+        <div className="mt-8 pt-6 border-t dark:border-gray-700 text-center">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             Are you a seller?{' '}
             <Link href="/seller/register" className="text-orange-500 hover:underline">
               Register here
@@ -216,7 +216,7 @@ function LoginForm() {
           </p>
         </div>
 
-        <p className="text-xs text-gray-400 text-center mt-6">
+        <p className="text-xs text-gray-400 dark:text-gray-500 text-center mt-6">
           By continuing, you agree to F2R's Terms of Service and Privacy Policy
         </p>
       </div>
