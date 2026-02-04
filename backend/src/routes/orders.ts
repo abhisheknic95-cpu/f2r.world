@@ -1,0 +1,30 @@
+import express from 'express';
+import {
+  createOrder,
+  verifyPayment,
+  getMyOrders,
+  getOrder,
+  getVendorOrders,
+  updateItemStatus,
+  cancelOrder,
+  getAllOrders,
+} from '../controllers/orderController';
+import { protect, authorize } from '../middleware/auth';
+
+const router = express.Router();
+
+// Customer routes
+router.post('/', protect, createOrder);
+router.post('/verify-payment', protect, verifyPayment);
+router.get('/my-orders', protect, getMyOrders);
+router.get('/:orderId', protect, getOrder);
+router.put('/:orderId/cancel', protect, cancelOrder);
+
+// Vendor routes
+router.get('/vendor/orders', protect, authorize('seller'), getVendorOrders);
+router.put('/:orderId/items/:itemId/status', protect, authorize('seller'), updateItemStatus);
+
+// Admin routes
+router.get('/admin/all', protect, authorize('admin'), getAllOrders);
+
+export default router;

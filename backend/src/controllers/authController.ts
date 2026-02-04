@@ -1,0 +1,315 @@
+import { Request, Response } from 'express';
+import User from '../models/User';
+import { generateToken, generateOTP } from '../utils/generateToken';
+import { AuthRequest } from '../middleware/auth';
+
+// @desc    Register user with phone and OTP
+// @route   POST /api/auth/send-otp
+export const sendOTP = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { phone } = req.body;
+
+    if (!phone) {
+      res.status(400).json({ success: false, message: 'Phone number is required' });
+      return;
+    }
+
+    const otp = generateOTP();
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+    let user = await User.findOne({ phone });
+
+    if (user) {
+      user.otp = otp;
+      user.otpExpiry = otpExpiry;
+      await user.save();
+    } else {
+      user = await User.create({
+        phone,
+        name: 'User',
+        email: `${phone}@f2r.co.in`,
+        otp,
+        otpExpiry,
+      });
+    }
+
+    // In production, send OTP via SMS service (MSG91, Twilio, etc.)
+    // For development, we'll log it
+    console.log(`OTP for ${phone}: ${otp}`);
+
+    res.status(200).json({
+      success: true,
+      message: 'OTP sent successfully',
+      // Remove this in production
+      otp: process.env.NODE_ENV === 'development' ? otp : undefined,
+    });
+  } catch (error) {
+    console.error('Send OTP Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// @desc    Verify OTP and login
+// @route   POST /api/auth/verify-otp
+export const verifyOTP = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { phone, otp } = req.body;
+
+    if (!phone || !otp) {
+      res.status(400).json({ success: false, message: 'Phone and OTP are required' });
+      return;
+    }
+
+    const user = await User.findOne({ phone }).select('+otp +otpExpiry');
+
+    if (!user) {
+      res.status(400).json({ success: false, message: 'User not found' });
+      return;
+    }
+
+    if (!user.otp || !user.otpExpiry) {
+      res.status(400).json({ success: false, message: 'OTP not sent or expired' });
+      return;
+    }
+
+    if (user.otp !== otp) {
+      res.status(400).json({ success: false, message: 'Invalid OTP' });
+      return;
+    }
+
+    if (new Date() > user.otpExpiry) {
+      res.status(400).json({ success: false, message: 'OTP expired' });
+      return;
+    }
+
+    // Clear OTP
+    user.otp = undefined;
+    user.otpExpiry = undefined;
+    user.isVerified = true;
+    await user.save();
+
+    const token = generateToken(user._id.toString());
+
+    res.status(200).json({
+      success: true,
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error('Verify OTP Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// @desc    Register seller
+// @route   POST /api/auth/register-seller
+export const registerSeller = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { name, email, phone, password } = req.body;
+
+    const existingUser = await User.findOne({ $or: [{ email }, { phone }] });
+    if (existingUser) {
+      res.status(400).json({ success: false, message: 'Email or phone already registered' });
+      return;
+    }
+
+    const user = await User.create({
+      name,
+      email,
+      phone,
+      password,
+      role: 'seller',
+    });
+
+    const token = generateToken(user._id.toString());
+
+    res.status(201).json({
+      success: true,
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error('Register Seller Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// @desc    Login seller/admin with email & password
+// @route   POST /api/auth/login
+export const login = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      res.status(400).json({ success: false, message: 'Email and password are required' });
+      return;
+    }
+
+    const user = await User.findOne({ email }).select('+password');
+
+    if (!user || !user.password) {
+      res.status(401).json({ success: false, message: 'Invalid credentials' });
+      return;
+    }
+
+    const isMatch = await user.comparePassword(password);
+
+    if (!isMatch) {
+      res.status(401).json({ success: false, message: 'Invalid credentials' });
+      return;
+    }
+
+    if (!user.isActive) {
+      res.status(401).json({ success: false, message: 'Account is deactivated' });
+      return;
+    }
+
+    const token = generateToken(user._id.toString());
+
+    res.status(200).json({
+      success: true,
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error('Login Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// @desc    Get current user
+// @route   GET /api/auth/me
+export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const user = await User.findById(req.user?._id);
+
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    console.error('Get Me Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// @desc    Update user profile
+// @route   PUT /api/auth/profile
+export const updateProfile = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { name, email } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      req.user?._id,
+      { name, email },
+      { new: true, runValidators: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    console.error('Update Profile Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// @desc    Add/Update address
+// @route   POST /api/auth/address
+export const addAddress = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { name, phone, address, city, state, pincode, isDefault } = req.body;
+
+    const user = await User.findById(req.user?._id);
+    if (!user) {
+      res.status(404).json({ success: false, message: 'User not found' });
+      return;
+    }
+
+    // If this is set as default, unset other defaults
+    if (isDefault) {
+      user.addresses.forEach((addr) => {
+        addr.isDefault = false;
+      });
+    }
+
+    user.addresses.push({
+      name,
+      phone,
+      address,
+      city,
+      state,
+      pincode,
+      isDefault: isDefault || user.addresses.length === 0,
+    });
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      addresses: user.addresses,
+    });
+  } catch (error) {
+    console.error('Add Address Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// @desc    Delete address
+// @route   DELETE /api/auth/address/:addressId
+export const deleteAddress = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const user = await User.findById(req.user?._id);
+    if (!user) {
+      res.status(404).json({ success: false, message: 'User not found' });
+      return;
+    }
+
+    user.addresses = user.addresses.filter(
+      (addr) => addr._id?.toString() !== req.params.addressId
+    );
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      addresses: user.addresses,
+    });
+  } catch (error) {
+    console.error('Delete Address Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// @desc    Logout
+// @route   POST /api/auth/logout
+export const logout = async (req: Request, res: Response): Promise<void> => {
+  res.cookie('token', 'none', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: 'Logged out successfully',
+  });
+};
